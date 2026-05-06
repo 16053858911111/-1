@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>竹秋纪念碑『永奠竹秋』</title>
+<style>
+    :root { --stone-light: #c8c0b8; --gold: #c9a96e; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        background: radial-gradient(ellipse at 50% 30%, #4a3b28 0%, #3a2c1a 35%, #2a1e10 70%, #1a1008 100%);
+        min-height:100vh; display:flex; align-items:center; justify-content:center;
+        font-family: 'STSong','Songti SC','Noto Serif SC','SimSun','KaiTi','STKaiti','楷体','宋体',serif;
+        overflow-x:hidden; overflow-y:auto; user-select:none; -webkit-tap-highlight-color:transparent; position:relative;
+    }
+    .bamboo-stick {
+        position:fixed; top:0; width:14px; height:100%; z-index:0; pointer-events:none;
+        background: repeating-linear-gradient(to bottom, #8b7e3e 0px, #8b7e3e 28px, #5e4a2b 28px, #5e4a2b 32px);
+        box-shadow: inset 2px 0 8px rgba(0,0,0,0.4), inset -2px 0 8px rgba(255,220,150,0.15); opacity:0.8;
+    }
+    .bamboo-stick.left { left:6%; border-radius:4px 2px 0 0; }
+    .bamboo-stick.right { right:6%; border-radius:2px 4px 0 0; }
+    body::before {
+        content:''; position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0;
+        background: radial-gradient(circle at 20% 25%, rgba(255,180,80,0.12) 0%, transparent 40%),
+                    radial-gradient(circle at 80% 55%, rgba(255,140,40,0.1) 0%, transparent 35%);
+    }
+    .main-container { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; padding:40px 0 30px; }
+    .tombstone-group { position:relative; display:flex; flex-direction:column; align-items:center; filter: drop-shadow(0 8px 30px rgba(0,0,0,0.6)); }
+    .tombstone-crown { width: clamp(160px,28vw,260px); height: clamp(18px,3vw,28px); background: linear-gradient(180deg, #d5cdc4 0%, #b8b0a6 40%, #9e958b 100%); border-radius:50% 50% 8px 8px; margin-bottom:-2px; box-shadow:inset 0 2px 3px rgba(255,255,255,0.25),0 3px 8px rgba(0,0,0,0.4); }
+    .tombstone-body { width:clamp(150px,26vw,240px); height:clamp(200px,35vw,320px); background:linear-gradient(175deg,#e0d8ce 0%,#d2c9be 8%,#c5bbb0 20%,#bfb5a9 40%,#b8aea2 55%,#c2b8ac 70%,#b0a69a 85%,#a3988c 100%); border-radius:6px 6px 3px 3px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 3px 0 8px rgba(255,255,255,0.2),inset -3px 0 8px rgba(0,0,0,0.15),0 4px 20px rgba(0,0,0,0.5); position:relative; overflow:hidden; }
+    .tombstone-body::before { content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; background:repeating-linear-gradient(2deg,transparent,transparent 3px,rgba(0,0,0,0.015) 3px,rgba(0,0,0,0.015) 4px),repeating-linear-gradient(92deg,transparent,transparent 8px,rgba(255,255,255,0.02) 8px,rgba(255,255,255,0.02) 9px); }
+    .tombstone-name { position:relative; z-index:1; font-size:clamp(32px,6vw,56px); font-weight:bold; color:#2a2520; letter-spacing:0.25em; text-shadow:1px 1px 0 rgba(255,255,255,0.3),-1px -1px 0 rgba(0,0,0,0.25); font-family:'STKaiti','KaiTi','楷体',serif; }
+    .tombstone-subtitle { position:relative; z-index:1; font-size:clamp(11px,1.8vw,15px); color:#4a433c; letter-spacing:0.35em; opacity:0.7; }
+    .tombstone-base { width:clamp(180px,31vw,290px); height:clamp(22px,3.5vw,34px); background:linear-gradient(180deg,#c5bbb0 0%,#b0a598 30%,#9e9386 70%,#8a8074 100%); border-radius:4px 4px 8px 8px; margin-top:-1px; box-shadow:inset 0 3px 4px rgba(255,255,255,0.2),0 4px 12px rgba(0,0,0,0.5); }
+    .tombstone-platform { width:clamp(200px,35vw,330px); height:clamp(14px,2.2vw,20px); background:linear-gradient(180deg,#9e9386 0%,#8a7e72 60%,#756b60 100%); border-radius:6px 6px 12px 12px; margin-top:2px; box-shadow:inset 0 2px 3px rgba(255,255,255,0.15),0 6px 16px rgba(0,0,0,0.5); }
+    .incense-area { position:relative; margin-top:clamp(45px,9vw,75px); display:flex; flex-direction:column; align-items:center; }
+    .incense-burner { width:clamp(70px,13vw,110px); height:clamp(55px,10vw,85px); background:linear-gradient(180deg,#8b6b55 0%,#7a5a42 15%,#6b4e3d 35%,#5c4030 55%,#4d3325 75%,#3e2618 100%); border-radius:50% 50% 40% 40% / 40% 40% 50% 50%; cursor:pointer; box-shadow:inset 0 -8px 15px rgba(0,0,0,0.5),inset 0 4px 8px rgba(255,200,150,0.15),0 6px 18px rgba(0,0,0,0.55); transition:transform 0.15s; z-index:3; }
+    .incense-burner:active { transform:translateY(1px) scale(0.96); }
+    .incense-burner.pulse { animation:burnerPulse 0.6s ease-out; }
+    @keyframes burnerPulse { 0%{box-shadow:inset 0 -8px 15px rgba(0,0,0,0.5),0 6px 18px rgba(0,0,0,0.55),0 0 60px rgba(255,180,80,0.55);} 100%{box-shadow:inset 0 -8px 15px rgba(0,0,0,0.5),0 6px 18px rgba(0,0,0,0.55),0 0 30px rgba(180,120,60,0.08);} }
+    .incense-burner::before { content:''; position:absolute; top:8%; left:18%; right:18%; height:28%; background:radial-gradient(ellipse at 50% 40%,#3a2518 0%,#2a1a10 60%,#1a0f08 100%); border-radius:50%; box-shadow:inset 0 3px 6px rgba(0,0,0,0.7); z-index:1; }
+    .incense-burner::after { content:''; position:absolute; top:22%; left:-14%; right:-14%; height:30%; border:4px solid #5c4030; border-radius:50%; border-top:none; border-bottom:none; z-index:0; pointer-events:none; }
+    .incense-burner-base { width:clamp(55px,10vw,85px); height:clamp(10px,1.8vw,15px); background:linear-gradient(180deg,#5c4030 0%,#4a3020 100%); border-radius:30%; margin-top:-3px; box-shadow:0 3px 8px rgba(0,0,0,0.5); }
+    .hint-text { margin-top:clamp(10px,2vw,18px); color:rgba(240,210,150,0.75); font-size:clamp(12px,1.6vw,15px); animation:hintFloat 3s ease-in-out infinite; text-align:center; }
+    @keyframes hintFloat { 0%,100%{opacity:0.45;transform:translateY(0);} 50%{opacity:0.8;transform:translateY(-3px);} }
+    .counter-display { margin-top:clamp(6px,1.2vw,10px); display:flex; gap:clamp(14px,3vw,28px); font-size:clamp(13px,1.7vw,16px); color:rgba(220,180,120,0.9); }
+    .counter-display span { color:#e6b422; font-weight:bold; text-shadow:0 0 10px rgba(220,160,40,0.5); }
+    .wall-container { margin-top:30px; width:90%; max-width:400px; text-align:center; }
+    .wall-container h3 { color:#e6c27c; margin-bottom:12px; }
+    .wall-list { max-height:300px; overflow-y:auto; padding:0 10px; }
+    .wall-item { display:flex; align-items:center; gap:12px; background:rgba(20,10,5,0.4); backdrop-filter:blur(4px); border-radius:12px; padding:10px 14px; margin-bottom:8px; color:#f0d8a0; }
+    .wall-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#fff; font-size:16px; flex-shrink:0; }
+    .wall-info { text-align:left; flex:1; }
+    .wall-name { font-size:16px; }
+    .wall-time { font-size:12px; opacity:0.7; }
+    #particleCanvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10; }
+    #nameModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; }
+    /* Toast 提示 */
+    #toast {
+        position: fixed; left: 50%; top: 20px; transform: translateX(-50%);
+        background: rgba(58, 44, 26, 0.9); backdrop-filter: blur(8px);
+        border: 1px solid #8b6b4b; border-radius: 12px; padding: 12px 24px;
+        color: #f0d8a0; font-size: 15px; z-index: 200; display: none;
+        white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+</style>
+</head>
+<body>
+
+<div class="bamboo-stick left"></div>
+<div class="bamboo-stick right"></div>
+
+<div class="main-container">
+    <div class="tombstone-group">
+        <div class="tombstone-crown"></div>
+        <div class="tombstone-body" id="tombstoneBody">
+            <div class="tombstone-name">竹 秋</div>
+            <div class="tombstone-subtitle">纪 念 碑</div>
+        </div>
+        <div class="tombstone-base"></div>
+        <div class="tombstone-platform"></div>
+    </div>
+    <div class="incense-area">
+        <div class="incense-burner" id="incenseBurner"></div>
+        <div class="incense-burner-base"></div>
+    </div>
+    <div class="hint-text">🍂 轻触香炉 · 上一炷香 🍂</div>
+    <div class="counter-display">本次 <span id="sessionCount">0</span> 炷 &nbsp;|&nbsp; 累计 <span id="totalCount">0</span> 炷</div>
+    <div class="wall-container"><h3>🕯️ 纪念墙</h3><div class="wall-list" id="wallList"></div></div>
+</div>
+
+<div id="nameModal">
+    <div style="background:#3a2c1a;border-radius:16px;padding:24px;text-align:center;max-width:300px;width:85%;border:1px solid #8b6b4b;">
+        <p style="color:#e6c27c;margin-bottom:16px;font-size:18px;">为竹秋上一炷香</p>
+        <input type="text" id="nameInput" placeholder="留名（选填）" maxlength="10" style="width:100%;padding:10px;border-radius:8px;border:1px solid #8b6b4b;background:#2a1e10;color:#f0d8a0;font-size:16px;text-align:center;margin-bottom:12px;">
+        <div style="display:flex;gap:10px;">
+            <button id="btnAnonymous" style="flex:1;padding:12px;border-radius:8px;border:none;background:#5c4030;color:#f0d8a0;font-size:15px;cursor:pointer;">🕊️ 匿名</button>
+            <button id="btnNamed" style="flex:1;padding:12px;border-radius:8px;border:none;background:#8b6b4b;color:#fff;font-size:15px;cursor:pointer;">✨ 留名</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+<canvas id="particleCanvas"></canvas>
+
+<script>
+(function() {
+    const burner = document.getElementById('incenseBurner');
+    const sessionEl = document.getElementById('sessionCount');
+    const totalEl = document.getElementById('totalCount');
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    const modal = document.getElementById('nameModal');
+    const nameInput = document.getElementById('nameInput');
+    const toast = document.getElementById('toast');
+
+    let sessionCount = 0;
+    let totalCount = 0;
+    let slots = [null, null, null]; // 0中 1左 2右
+    const smokeParticles = [];
+    const autumnLeaves = [];
+    const sparkParticles = [];
+
+    let lastRecordTime = 0; // 上次成功留名/匿名的时间戳
+    const COOLDOWN = 60000; // 1分钟冷却
+
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+
+    function burnerPos() {
+        const r = burner.getBoundingClientRect();
+        return {
+            x: r.left + r.width/2,
+            topY: r.top + r.height * 0.12,
+            width: r.width,
+            height: r.height
+        };
+    }
+
+    // 显示自定义提示
+    function showToast(msg, duration = 3000) {
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, duration);
+    }
+
+    // 通用：插入一根香到槽位（只负责动画显示，不发送请求）
+    function insertIncenseStick() {
+        const bp = burnerPos();
+        const now = Date.now();
+
+        // 清除燃尽的香
+        for (let i=0;i<3;i++) if(slots[i] && now-slots[i].createdAt>slots[i].duration) slots[i]=null;
+
+        // 固定顺序：中、左、右
+        const order = [0,1,2];
+        let t = -1;
+        for (let o of order) if(!slots[o]){ t=o; break; }
+        if(t===-1){
+            let old=Infinity;
+            for(let i=0;i<3;i++) if(slots[i]&&slots[i].createdAt<old){ old=slots[i].createdAt; t=i; }
+        }
+
+        const sw = bp.width * 0.35;
+        const ox = [0, -sw, sw][t];
+        const length = bp.height * 1.1;
+        const stick = {
+            createdAt: now,
+            duration: 28000 + Math.random()*6000,
+            baseX: bp.x + ox,
+            baseY: bp.topY,
+            maxLength: length,
+            slotIndex: t
+        };
+        slots[t] = stick;
+        sessionCount++;
+        sessionEl.textContent = sessionCount;
+
+        burner.classList.remove('pulse');
+        void burner.offsetWidth;
+        burner.classList.add('pulse');
+        return t; // 返回槽位索引，以便回滚
+    }
+
+    // 移除指定槽位的香（回滚用）
+    function removeIncenseStick(slotIndex) {
+        if (slots[slotIndex]) {
+            slots[slotIndex] = null;
+            sessionCount--;
+            sessionEl.textContent = sessionCount;
+        }
+    }
+
+    // 点击香炉触发
+    function trigger() {
+        const now = Date.now();
+        if (now - lastRecordTime < COOLDOWN) {
+            // 冷却中：只插香动画，不弹窗，不记录
+            insertIncenseStick();
+            showToast('您已上香，一分钟内无法再次留名，但可继续插香');
+        } else {
+            // 正常弹窗选择
+            modal.style.display='flex';
+            nameInput.value='';
+            nameInput.focus();
+        }
+    }
+
+    // 用户选择后执行
+    function doIncense(isAnon, name) {
+        modal.style.display='none';
+        const slotIndex = insertIncenseStick(); // 先插入动画
+        const fname = isAnon ? '匿名' : (name || '匿名');
+
+        fetch('/api/memorial', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ name: fname, isAnonymous: isAnon })
+        })
+        .then(r => {
+            if(!r.ok) return r.json().then(err => Promise.reject(err));
+            // 成功：更新时间戳，刷新墙
+            lastRecordTime = Date.now();
+            loadWall();
+            showToast('已上香成功，一分钟内无法再次留名，但可继续插香');
+        })
+        .catch(e => {
+            // 失败：移除刚插入的香，提示错误
+            removeIncenseStick(slotIndex);
+            showToast(e.error || '上香失败，请稍后再试');
+        });
+    }
+
+    // 按钮事件
+    document.getElementById('btnAnonymous').onclick = ()=> doIncense(true, '');
+    document.getElementById('btnNamed').onclick = ()=> {
+        const n = nameInput.value.trim();
+        doIncense(!n, n);
+    };
+    nameInput.addEventListener('keydown', e=> {
+        if(e.key==='Enter'){
+            const n = nameInput.value.trim();
+            doIncense(!n, n);
+        }
+    });
+    burner.onclick = ()=> trigger();
+    burner.ontouchend = (e)=>{ e.preventDefault(); trigger(); };
+    document.getElementById('tombstoneBody').onclick = ()=> trigger();
+
+    // 加载纪念墙与累计
+    async function loadWall() {
+        try {
+            const r = await fetch('/api/memorials');
+            const data = await r.json();
+            const list = document.getElementById('wallList');
+            list.innerHTML = data.map(x => {
+                const dn = x.is_anonymous ? '匿名' : (x.name || '匿名');
+                let h = 0;
+                for (let i = 0; i < dn.length; i++) h = dn.charCodeAt(i) + ((h << 5) - h);
+                const color = `hsl(${Math.abs(h) % 360}, 60%, 55%)`;
+                const time = new Date(x.created_at).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                return `<div class="wall-item"><div class="wall-avatar" style="background:${color}">${dn.charAt(0)}</div><div class="wall-info"><div class="wall-name">${dn} 上了一炷香</div><div class="wall-time">${time}</div></div></div>`;
+            }).join('');
+        } catch(e) {}
+        try {
+            const tr = await fetch('/api/total');
+            const data = await tr.json();
+            totalEl.textContent = data.total;
+        } catch(e) {}
+    }
+
+    // 秋叶与烟雾粒子（保持不变）
+    const autumnColors = ['#c49a2c','#b5651d','#d49a3e','#a0522d','#cc7722','#daa520'];
+    function spawnLeaf() {
+        return { x:Math.random()*canvas.width, y:-30, vy:0.5+Math.random()*1.2, vx:(Math.random()-0.5)*0.8, sway:0.05, swaySpeed:0.02+Math.random()*0.04, swayOffset:Math.random()*Math.PI*2, rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05, size:14+Math.random()*22, opacity:0.5+Math.random()*0.5, color:autumnColors[Math.floor(Math.random()*autumnColors.length)] };
+    }
+    function spawnSmoke(stick) {
+        const prog = (Date.now() - stick.createdAt) / stick.duration;
+        const tipX = stick.baseX, tipY = stick.baseY - stick.maxLength*(1-prog);
+        return { x:tipX+(Math.random()-0.5)*6, y:tipY-Math.random()*4, vx:(Math.random()-0.5)*0.35, vy:-0.5-Math.random()*1.6, size:Math.random()*3.5+2, life:1, decay:0.006+Math.random()*0.014, growth:0.04+Math.random()*0.08 };
+    }
+    function spawnSpark(stick) {
+        const prog = (Date.now() - stick.createdAt) / stick.duration;
+        const tipX = stick.baseX, tipY = stick.baseY - stick.maxLength*(1-prog);
+        return { x:tipX+(Math.random()-0.5)*3, y:tipY, vx:(Math.random()-0.5)*0.7, vy:-1.5-Math.random()*2.5, size:Math.random()*1.8+0.6, life:1, decay:0.04+Math.random()*0.06, color:Math.random()<0.5?'warm':'hot' };
+    }
+
+    let lastLeaf = 0;
+    function animate(ts) {
+        const now = Date.now();
+        const bp = burnerPos();
+        const tomb = document.querySelector('.tombstone-body').getBoundingClientRect();
+        const isOnTomb = (x,y) => x>tomb.left && x<tomb.right && y>tomb.top && y<tomb.bottom;
+
+        for (let i=0;i<3;i++) if(slots[i] && now-slots[i].createdAt>slots[i].duration) slots[i]=null;
+
+        slots.forEach(s => {
+            if(!s) return;
+            const prog = Math.min((now - s.createdAt) / s.duration, 1);
+            if(prog < 1) {
+                for(let i=0;i<4;i++) smokeParticles.push(spawnSmoke(s));
+                if(Math.random()<0.35) sparkParticles.push(spawnSpark(s));
+            }
+        });
+
+        if(ts - lastLeaf > 1200 + Math.random()*1000) { autumnLeaves.push(spawnLeaf()); lastLeaf = ts; }
+
+        while(smokeParticles.length>300) smokeParticles.shift();
+        while(sparkParticles.length>80) sparkParticles.shift();
+        while(autumnLeaves.length>25) autumnLeaves.shift();
+
+        for(let i=smokeParticles.length-1;i>=0;i--) { const p=smokeParticles[i]; p.x+=p.vx; p.y+=p.vy; p.size+=p.growth; p.life-=p.decay; if(p.life<=0) smokeParticles.splice(i,1); }
+        for(let i=sparkParticles.length-1;i>=0;i--) { const p=sparkParticles[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.life-=p.decay; if(p.life<=0||p.y>canvas.height+20) sparkParticles.splice(i,1); }
+        for(let i=autumnLeaves.length-1;i>=0;i--) { const l=autumnLeaves[i]; l.y+=l.vy; l.x+=l.vx+Math.sin(ts*l.swaySpeed+l.swayOffset)*l.sway*25; l.rotation+=l.rotSpeed; if(l.y>canvas.height+60) autumnLeaves.splice(i,1); }
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        autumnLeaves.forEach(l => {
+            ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(l.rotation); ctx.globalAlpha=l.opacity;
+            ctx.beginPath(); ctx.ellipse(0,0,l.size*0.25,l.size*0.5,0,0,Math.PI*2); ctx.fillStyle=l.color; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(0,-l.size*0.45); ctx.lineTo(0,l.size*0.45); ctx.strokeStyle='rgba(80,40,20,0.4)'; ctx.lineWidth=0.6; ctx.stroke();
+            ctx.restore();
+        });
+
+        smokeParticles.forEach(p => {
+            if(isOnTomb(p.x,p.y)) return;
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+            const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
+            g.addColorStop(0,`rgba(220,200,160,${p.life*0.6})`); g.addColorStop(0.5,`rgba(190,160,110,${p.life*0.4})`); g.addColorStop(1,'rgba(150,120,80,0)');
+            ctx.fillStyle=g; ctx.fill();
+        });
+
+        sparkParticles.forEach(p => {
+            if(isOnTomb(p.x,p.y)) return;
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+            ctx.fillStyle = p.color==='hot'?`rgba(255,200,80,${p.life})`:`rgba(255,160,50,${p.life})`;
+            ctx.shadowColor=ctx.fillStyle; ctx.shadowBlur=4; ctx.fill(); ctx.shadowBlur=0;
+        });
+
+        slots.forEach(s => {
+            if(!s) return;
+            const prog = Math.min((now - s.createdAt) / s.duration, 1);
+            const cl = s.maxLength * (1 - prog);
+            if(cl < 2) return;
+            const bx=s.baseX, by=s.baseY, tx=bx, ty=by - cl;
+            ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(tx,ty); ctx.strokeStyle='#5c3a28'; ctx.lineWidth=2.2; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(tx,ty); ctx.strokeStyle='#3e2215'; ctx.lineWidth=3; ctx.globalAlpha=0.35; ctx.stroke(); ctx.globalAlpha=1;
+            ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(tx,ty); ctx.strokeStyle='#7a5035'; ctx.lineWidth=1.3; ctx.stroke();
+            const gs=5+Math.sin(ts*0.015+s.createdAt)*1.5;
+            const g = ctx.createRadialGradient(tx,ty,0,tx,ty,gs);
+            g.addColorStop(0,'rgba(255,240,200,0.95)'); g.addColorStop(0.3,'rgba(255,180,60,0.8)'); g.addColorStop(0.6,'rgba(255,100,30,0.4)'); g.addColorStop(1,'rgba(255,60,10,0)');
+            ctx.beginPath(); ctx.arc(tx,ty,gs,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+            ctx.beginPath(); ctx.arc(tx,ty,1.5,0,Math.PI*2); ctx.fillStyle='rgba(255,255,230,0.9)'; ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    loadWall();
+    setInterval(loadWall, 3000);
+    requestAnimationFrame(animate);
+
+    document.addEventListener('keydown', e => {
+        if(e.code==='Space'||e.code==='KeyX'){ e.preventDefault(); trigger(); }
+    });
+})();
+</script>
+</body>
+</html>
